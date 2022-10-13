@@ -1,0 +1,50 @@
+plugins {
+  id 'java'
+  id 'idea'
+}
+
+group = 'com.pohvii.note'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+}
+
+repositories {
+  mavenLocal()
+  maven { url 'https://maven.aliyun.com/repository/public' }
+  mavenCentral()
+}
+
+dependencies {
+  // https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-dependencies/2.7.3/spring-boot-dependencies-2.7.3.pom
+  implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.3')
+  annotationProcessor platform('org.springframework.boot:spring-boot-dependencies:2.7.3')
+  testAnnotationProcessor platform('org.springframework.boot:spring-boot-dependencies:2.7.3')
+
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
+  testCompileOnly "org.projectlombok:lombok"
+  testAnnotationProcessor "org.projectlombok:lombok"
+
+  // Logging:
+  implementation 'org.slf4j:slf4j-api'
+  implementation 'ch.qos.logback:logback-classic'
+
+  testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+idea {
+  module {
+    downloadJavadoc = false
+    downloadSources = true
+  }
+}
+
+tasks.named('wrapper') {
+  distributionType = Wrapper.DistributionType.ALL
+  gradleVersion = '7.5'
+}
