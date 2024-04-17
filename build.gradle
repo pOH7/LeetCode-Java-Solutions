@@ -1,16 +1,15 @@
 plugins {
   id 'java'
   id 'idea'
+  id 'org.springframework.boot' version '3.2.4'
+  id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.pohvii.note'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
 
-configurations {
-  compileOnly {
-    extendsFrom annotationProcessor
-  }
+java {
+  sourceCompatibility = '21'
 }
 
 repositories {
@@ -20,11 +19,6 @@ repositories {
 }
 
 dependencies {
-  // https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-dependencies/2.7.3/spring-boot-dependencies-2.7.3.pom
-  implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.3')
-  annotationProcessor platform('org.springframework.boot:spring-boot-dependencies:2.7.3')
-  testAnnotationProcessor platform('org.springframework.boot:spring-boot-dependencies:2.7.3')
-
   compileOnly 'org.projectlombok:lombok'
   annotationProcessor 'org.projectlombok:lombok'
   testCompileOnly "org.projectlombok:lombok"
@@ -46,5 +40,5 @@ idea {
 
 tasks.named('wrapper') {
   distributionType = Wrapper.DistributionType.ALL
-  gradleVersion = '7.5'
+  gradleVersion = '8.7'
 }
