@@ -1,104 +1,82 @@
 package leetcode.problems.p00;
 
-import leetcode.bean.ListNode;
+import static leetcode.utils.LeetCodeUtils.ListNode;
+import static leetcode.utils.LeetCodeUtils.print;
+
 import org.junit.jupiter.api.Test;
+
+import java.util.Random;
 
 /**
  * @link https://leetcode.com/problems/merge-two-sorted-lists/
  * @author zhanglei
  * @date 2021/10/8
  */
-public class P0021 {
-
-    /** time complexity: O(n) space complexity: O(1) n: l1.length + l2.length */
-    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        if (l1 == null) {
-            return l2;
-        }
-        if (l2 == null) {
-            return l1;
-        }
-        ListNode dummy = new ListNode(0, null);
-        ListNode curr = dummy;
-        while (l1 != null && l2 != null) {
-            if (l1.val < l2.val) {
-                curr.next = l1;
-                curr = l1;
-                l1 = l1.next;
-            } else {
-                curr.next = l2;
-                curr = l2;
-                l2 = l2.next;
-            }
-        }
-        if (l1 == null) {
-            curr.next = l2;
-        } else if (l2 == null) {
-            curr.next = l1;
-        }
-        return dummy.next;
-    }
-
-    //    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-    //        if(l1==null){
-    //            return l2;
-    //        }
-    //        if(l2==null){
-    //            return l1;
-    //        }
-    //        if(l1.val<l2.val){
-    //            l1.next=mergeTwoLists(l1.next, l2);
-    //            return l1;
-    //        }else {
-    //            l2.next = mergeTwoLists(l1,l2.next);
-    //            return l2;
-    //        }
-    //    }
-
-    //    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-    //        ListNode l = new ListNode(0, null);
-    //        mergeTwoLists(l, l1, l2);
-    //        return l.next;
-    //    }
-    //
-    //    void mergeTwoLists(ListNode l, ListNode l1, ListNode l2) {
-    //        if(l1==null&&l2==null){
-    //            return;
-    //        }else if(l1==null){
-    //            mergeTwoLists(l,l2,l1);
-    //        }else if(l2==null) {
-    //            l.next = l1;
-    //            mergeTwoLists(l1, l1.next,l2);
-    //        }else if(l1.val<=l2.val) {
-    //            l.next = l1;
-    //            mergeTwoLists(l1, l1.next,l2);
-    //        }else {
-    //            mergeTwoLists(l, l2, l1);
-    //        }
-    //    }
+class P0021 {
 
     @Test
     void test1() {
-        int[] l1 = {1, 2, 4};
-        int[] l2 = {1, 3, 4};
-        ListNode listNode = mergeTwoLists(ListNode.newListNode(l1), ListNode.newListNode(l2));
-        String print = ListNode.print(listNode);
-        System.out.println();
+        Solution solution = new Solution2();
+
+        Random random = new Random();
+        ListNode list1 =
+                ListNode.generateRandomListNode(
+                        random.nextInt(10), -100, 100, ListNode.Order.ASCENDING);
+        print(list1);
+        ListNode list2 =
+                ListNode.generateRandomListNode(
+                        random.nextInt(10), -100, 100, ListNode.Order.ASCENDING);
+        print(list2);
+        ListNode listNode = solution.mergeTwoLists(list1, list2);
+        print(listNode);
     }
 
-    @Test
-    void test2() {
-        int[] l1 = {};
-        int[] l2 = {};
-        ListNode listNode = mergeTwoLists(ListNode.newListNode(l1), ListNode.newListNode(l2));
-        System.out.println();
+    interface Solution {
+        ListNode mergeTwoLists(ListNode list1, ListNode list2);
     }
 
-    @Test
-    void test3() {
-        int[] l1 = {};
-        int[] l2 = {0};
-        ListNode listNode = mergeTwoLists(ListNode.newListNode(l1), ListNode.newListNode(l2));
-        System.out.println();
+    class Solution1 implements Solution {
+        /** time complexity: O(n) space complexity: O(1) n: l1.length + l2.length */
+        @Override
+        public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+            ListNode dummy = new ListNode(0, null);
+            ListNode curr = dummy;
+            while (l1 != null && l2 != null) {
+                if (l1.val < l2.val) {
+                    curr.next = l1;
+                    l1 = l1.next;
+                } else {
+                    curr.next = l2;
+                    l2 = l2.next;
+                }
+                curr = curr.next;
+            }
+            if (l1 == null) {
+                curr.next = l2;
+            } else {
+                curr.next = l1;
+            }
+            return dummy.next;
+        }
+    }
+
+    class Solution2 implements Solution {
+
+        @Override
+        public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+            if (list1 == null) {
+                return list2;
+            }
+            if (list2 == null) {
+                return list1;
+            }
+            if (list1.val <= list2.val) {
+                list1.next = mergeTwoLists(list1.next, list2);
+                return list1;
+            } else {
+                list2.next = mergeTwoLists(list1, list2.next);
+                return list2;
+            }
+        }
     }
 }
