@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Random;
 
 /**
+ * @title Merge Two Sorted Lists
  * @link https://leetcode.com/problems/merge-two-sorted-lists/
  * @author zhanglei
  * @date 2021/10/8
  */
-class P0021 {
+class P0021_Merge_Two_Sorted_Lists {
 
     @Test
     void test1() {
