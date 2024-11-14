@@ -34,9 +34,12 @@ public class P0283_Move_Zeroes {
     class Solution1 implements Solution {
         @Override
         public void moveZeroes(int[] nums) {
+            int j = -1;
             for (int i = 0; i < nums.length; i++) {
                 if (nums[i] == 0) {
-                    int j = i + 1;
+                    if (j < 0) {
+                        j = i + 1;
+                    }
                     for (; j < nums.length; j++) {
                         if (nums[j] != 0) {
                             int temp = nums[i];
