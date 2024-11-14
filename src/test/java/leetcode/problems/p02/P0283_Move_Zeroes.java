@@ -27,6 +27,14 @@ public class P0283_Move_Zeroes {
         assertEquals("[0]", Arrays.toString(nums).replace(" ", ""));
     }
 
+    @Test
+    void test3() {
+        Solution solution = new Solution1();
+        int[] nums = {12, 1, 0, 3, 12};
+        solution.moveZeroes(nums);
+        assertEquals("[12,1,3,12,0]", Arrays.toString(nums).replace(" ", ""));
+    }
+
     interface Solution {
         public void moveZeroes(int[] nums);
     }
@@ -51,6 +59,22 @@ public class P0283_Move_Zeroes {
                     if (j >= nums.length) {
                         break;
                     }
+                }
+            }
+        }
+    }
+
+    class Solution2 implements Solution {
+        @Override
+        public void moveZeroes(int[] nums) {
+            // left point to zero
+            // right point to non-zero
+            for (int left = 0, right = 0; right < nums.length; right++) {
+                if (nums[right] != 0) {
+                    int temp = nums[right];
+                    nums[right] = nums[left];
+                    nums[left] = temp;
+                    left++;
                 }
             }
         }
