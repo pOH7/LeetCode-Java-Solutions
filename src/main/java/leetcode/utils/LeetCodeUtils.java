@@ -260,7 +260,7 @@ public class LeetCodeUtils {
          */
         public static TreeNode ofArrayString(String treeAsStrArr) {
             Integer[] arr = CommonUtils.arrayFromString(treeAsStrArr);
-            return array2btree(arr, 0);
+            return array2btree(arr);
         }
 
         /**
@@ -361,18 +361,22 @@ public class LeetCodeUtils {
 
         // A method that converts an integer array obtained by breadth-first traversal of a binary
         // tree into a binary tree.
-        private static TreeNode array2btree(Integer[] arr, int i) {
+        private static TreeNode array2btree(Integer[] arr) {
             TreeNode treeNode = null;
 
-            if (i < arr.length) {
-
-                if (arr[i] == null) return null;
-
-                treeNode = new TreeNode(arr[i]);
-
-                treeNode.left = array2btree(arr, 2 * i + 1);
-
-                treeNode.right = array2btree(arr, 2 * i + 2);
+            if (arr.length > 0) {
+                treeNode = new TreeNode(arr[0]);
+                Queue<TreeNode> queue = new LinkedList<>();
+                queue.offer(treeNode);
+                for (int i = 1; i < arr.length; i += 2) {
+                    TreeNode node = queue.poll();
+                    if (arr[i] != null) {
+                        queue.offer(node.left = new TreeNode(arr[i]));
+                    }
+                    if (i + 1 < arr.length && arr[i + 1] != null) {
+                        queue.offer(node.right = new TreeNode(arr[i + 1]));
+                    }
+                }
             }
 
             return treeNode;
