@@ -122,4 +122,72 @@ public class P0417_Pacific_Atlantic_Water_Flow {
             }
         }
     }
+
+    // 11 ms Beats 33.70%
+    class Solution2 implements Solution {
+        static final int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
+        @Override
+        public List<List<Integer>> pacificAtlantic(int[][] heights) {
+            int m = heights.length;
+            int n = heights[0].length;
+
+            // consider the Pacific Ocean
+            boolean[][] canFlowToThePacificOceans = new boolean[m][n];
+            LinkedList<Integer> q = new LinkedList<>();
+            for (int i = 0; i < m; i++) {
+                canFlowToThePacificOceans[i][0] = true;
+                q.offerLast(i * n);
+            }
+            for (int j = 0; j < n; j++) {
+                canFlowToThePacificOceans[0][j] = true;
+                q.offerLast(j);
+            }
+            bfs(heights, m, n, q, canFlowToThePacificOceans);
+
+            // consider the Atlantic Ocean
+            boolean[][] canFlowToTheAtlanticOceans = new boolean[m][n];
+            // LinkedList<int[]> q = new LinkedList<>();
+            q.clear();
+            for (int i = 0; i < m; i++) {
+                canFlowToTheAtlanticOceans[i][n - 1] = true;
+                q.offerLast(i * n + n - 1);
+            }
+            for (int j = 0; j < n; j++) {
+                canFlowToTheAtlanticOceans[m - 1][j] = true;
+                q.offerLast((m - 1) * n + j);
+            }
+            bfs(heights, m, n, q, canFlowToTheAtlanticOceans);
+
+            List<List<Integer>> ans = new ArrayList<>();
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (canFlowToThePacificOceans[i][j] && canFlowToTheAtlanticOceans[i][j]) {
+                        ans.add(List.of(i, j));
+                    }
+                }
+            }
+            return ans;
+        }
+
+        private void bfs(
+                int[][] heights, int m, int n, LinkedList<Integer> q, boolean[][] visited) {
+            while (!q.isEmpty()) {
+                Integer code = q.pollFirst();
+                for (int[] direction : directions) {
+                    int x = code / n + direction[0];
+                    int y = code % n + direction[1];
+                    if (0 <= x
+                            && x < m
+                            && 0 <= y
+                            && y < n
+                            && !visited[x][y]
+                            && heights[x][y] >= heights[code / n][code % n]) {
+                        q.offer(x * n + y);
+                        visited[x][y] = true;
+                    }
+                }
+            }
+        }
+    }
 }
