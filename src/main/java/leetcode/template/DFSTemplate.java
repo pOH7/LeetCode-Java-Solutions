@@ -87,7 +87,7 @@ public class DFSTemplate {
 
         System.out.println("Visiting node: " + node);
 
-        for (int neighbor : graph.getOrDefault(node, new ArrayList<>())) {
+        for (int neighbor : graph.getOrDefault(node, Collections.emptyList())) {
             dfsGraph(graph, neighbor, visited);
         }
     }
