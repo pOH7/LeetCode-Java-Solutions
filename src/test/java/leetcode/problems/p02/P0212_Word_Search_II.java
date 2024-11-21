@@ -6,7 +6,7 @@ import leetcode.difficulty.Hard;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,50 +48,84 @@ public class P0212_Word_Search_II {
         System.out.println(solution.findWords(board, words));
     }
 
+    @Test
+    void test64() {
+        Solution solution = new Solution1();
+        char[][] board = {
+            {'o', 'a', 'a', 'n'}, {'e', 't', 'a', 'e'}, {'i', 'h', 'k', 'r'}, {'i', 'f', 'l', 'v'}
+        };
+        String[] words = {
+            "oath", "pea", "eat", "rain", "oathi", "oathk", "oathf", "oate", "oathii", "oathfi",
+            "oathfii"
+        };
+        System.out.println(solution.findWords(board, words));
+    }
+
     interface Solution {
         public List<String> findWords(char[][] board, String[] words);
     }
 
-    // TODO Time Limit Exceeded
+    // 309 ms Beats 45.34%
     class Solution1 implements Solution {
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
         public List<String> findWords(char[][] board, String[] words) {
-            return Arrays.stream(words).filter(w -> findWord(board, w)).toList();
+            TireNode root = new TireNode();
+            for (String word : words) {
+                TireNode node = root;
+                for (int i = 0; i < word.length(); i++) {
+                    int index = word.charAt(i) - 'a';
+                    if (node.children[index] == null) {
+                        node.children[index] = new TireNode();
+                    }
+                    node = node.children[index];
+                }
+                node.word = word;
+            }
+            List<String> ans = new ArrayList<>();
+            findWords(board, root, ans);
+            return ans;
         }
 
-        boolean findWord(char[][] board, String word) {
+        void findWords(char[][] board, TireNode root, List<String> ans) {
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[0].length; j++) {
                     boolean[][] visited = new boolean[board.length][board[0].length];
-                    if (dfs(board, i, j, visited, word, 0)) {
-                        return true;
-                    }
+                    dfs(board, i, j, visited, root, ans);
                 }
             }
-            return false;
         }
 
-        boolean dfs(char[][] board, int i, int j, boolean[][] visited, String word, int index) {
-            if (!isValid(board, i, j) || visited[i][j] || word.charAt(index) != board[i][j]) {
-                return false;
+        void dfs(
+                char[][] board,
+                int i,
+                int j,
+                boolean[][] visited,
+                TireNode root,
+                List<String> ans) {
+            if (!isValid(board, i, j)
+                    || visited[i][j]
+                    || root.children[board[i][j] - 'a'] == null) {
+                return;
             }
-            index++;
-            if (word.length() == index) {
-                return true;
+            root = root.children[board[i][j] - 'a'];
+            if (root.word != null) {
+                ans.add(root.word);
+                root.word = null;
             }
             visited[i][j] = true;
 
             for (int[] direction : directions) {
                 int x = i + direction[0];
                 int y = j + direction[1];
-                boolean find = dfs(board, x, y, visited, word, index);
-                if (find) {
-                    return true;
-                }
+                dfs(board, x, y, visited, root, ans);
             }
             visited[i][j] = false;
-            return false;
+        }
+
+        class TireNode {
+            TireNode[] children = new TireNode[26];
+            String word;
         }
 
         boolean isValid(char[][] board, int i, int j) {
